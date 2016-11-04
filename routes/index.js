@@ -1,38 +1,9 @@
 'use strict'
 var IndexModel = require('../models/index');
+var mongoose = require('mongoose');
+var Employee = require('../models/employee');
 
-
-var employeeInfo = {
-
-	"naseetharaman" : {
-     "name" : "Narayanan Seetharaman",
-     "meeting" : [ {
-     	"time" : "2:00 PM IST",
-     	"title" : " Deployment",
-     	
-      }]
-	},
-
-	"mprattile" : {
-	   "name" : "Midhun Prattile",
-        "meeting" : [ {
-	     	"time" : "2:00 PM IST",
-	     	"title" : " Deployment",
-     	
-      }]
-
-	},
-
-	"mboomibalan" : {
-	   "name" : "Maheshwaran Boomibalan",
-       "meeting" : [ {
-	       "time" : "2:00 PM IST",
-	       "title" : " Deployment",
-     	
-      }]
-
-	}
-};
+mongoose.connect('mongodb://localhost/magic-mirror-db');
 
 module.exports = function(router){
 
@@ -44,13 +15,20 @@ module.exports = function(router){
 
 	router.get('/api/employee/:corpid',function(req,res,next){
 		var corpid = req.params.corpid;
-		console.log(employeeInfo.corpid);
-		if(employeeInfo.corpid){
-          return res.json(JSON.stringify(employeeInfo.corpid));
-		}
+		Employee.findOne({corpid : corpid},function(err,employee){
+			if(employee)
+			return res.json(employee);
+         
+           res.json({
+            "Message" : "Did not match our records"
+		});
 
-		res.json({
-           "Message" : "Did not match our records"
 		})
+		// console.log(employeeInfo.corpid);
+		// if(employeeInfo.corpid){
+  //         return res.json(JSON.stringify(employeeInfo.corpid));
+		// }
+
+		
 	});
 }
